@@ -1,0 +1,113 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns
+#Importing KMeans from sklearn
+from sklearn.cluster import KMeans
+
+df=pd.read_csv("Mall_Customers.csv")
+
+df.head()
+
+df.tail()
+
+df.shape
+
+df.info()
+
+df.describe()
+
+df.isnull().sum()
+
+df.columns
+
+data1=df[['Annual_Income_(k$)','Spending_Score']]
+
+#Distribution of age
+plt.figure(figsize=(10, 6))
+sns.set(style = 'whitegrid')
+sns.distplot(df['Age'])
+plt.title('Distribution of Age', fontsize = 20)
+plt.xlabel('Range of Age')
+plt.ylabel('Count')
+
+from sklearn.cluster import KMeans
+wc_ss = []
+for i in range(1, 11):
+    kmeans_clu = KMeans(n_clusters = i, random_state = 56)
+    kmeans_clu.fit(data1)
+    # inertia method returns wcss for that model
+    wc_ss.append(kmeans_clu.inertia_)
+
+plt.figure(figsize=(10,5))
+plt.plot(range(1,11), wc_ss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+plt.figure(figsize=(10,5))
+plt.plot(range(1,11), wc_ss)
+plt.title('The Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
+# Fitting K-Means to the dataset
+kmeans = KMeans(n_clusters = 5, random_state = 56)
+y_kmeans = kmeans.fit_predict(data1)
+
+#Scatterplot of the clusters
+plt.figure(figsize=(10,6))
+sns.scatterplot(x = 'Annual_Income_(k$)',y = 'Spending_Score',palette=['green','orange','brown','dodgerblue','red'], legend='full',data = data1  ,s = 60 )
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)') 
+plt.title('Spending Score (1-100) vs Annual Income (k$)')
+plt.show()
+
+
+df.columns
+
+df.columns
+
+X2=data[["Age","Annual_Income_(k$)","Spending_Score"]]
+#Now we calculate the Within Cluster Sum of Squared Errors (WSS) for different values of k.
+wcss = []
+for k in range(1,11):
+    kmeans = KMeans(n_clusters=k, init="k-means++")
+    kmeans.fit(X2)
+    wcss.append(kmeans.inertia_)
+plt.figure(figsize=(12,6))    
+plt.plot(range(1,11),wcss, linewidth=2, color="red", marker ="8")
+plt.xlabel("K Value")
+plt.xticks(np.arange(1,11,1))
+plt.ylabel("Spending_Score (1-100)")
+plt.show()
+
+wcss=[]
+for i in range(1,11):
+    km=KMeans(n_clusters=i)
+    km.fit(data1)
+    wcss.append(km.inertia_)
+
+df2=df[['Age',	'Annual_Income_(k$)','Spending_Score']]
+
+#We choose the k for which WSS starts to diminish
+km2 = KMeans(n_clusters=5)
+y2 = km.fit_predict(X2)
+df2["label"] = y2
+#The data with labels
+df2.head()
+
+fig = plt.figure(figsize=(20,10))
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(df2.Age[df2.label == 0], df2["Annual_Income_(k$)"][df2.label == 0], df2["Spending_Score"][df2.label == 0], c='purple', s=60)
+ax.scatter(df2.Age[df2.label == 1], df2["Annual_Income_(k$)"][df2.label == 1], df2["Spending_Score"][df2.label == 1], c='red', s=60)
+ax.scatter(df2.Age[df2.label == 2], df2["Annual_Income_(k$)"][df2.label == 2], df2["Spending_Score"][df2.label == 2], c='blue', s=60)
+ax.scatter(df2.Age[df2.label == 3], df2["Annual_Income_(k$)"][df2.label == 3], df2["Spending_Score"][df2.label == 3], c='green', s=60)
+ax.scatter(df2.Age[df2.label == 4], df2["Annual_Income_(k$)"][df2.label == 4], df2["Spending_Score"][df2.label == 4], c='yellow', s=60)
+ax.view_init(35, 185)
+plt.xlabel("Age")
+plt.ylabel("Annual Income (k$)")
+ax.set_zlabel('Spending Score (1-100)')
+plt.show()
